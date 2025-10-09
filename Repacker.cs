@@ -198,13 +198,47 @@ public class Repacker
         using (var writer = new BinaryWriter(File.Create(outputRpackPath)))
         {
             writer.Write(finalHeader);
-            for (int i = 0; i < newSectionEntries.Count; i++) { var e = newSectionEntries[i]; writer.Write(e.FileType); writer.Write(e.Type2); writer.Write(e.Type3); writer.Write(e.Type4); writer.Write(e.RawOffset); writer.Write(e.UnpackedSize); writer.Write(e.PackedSize); writer.Write(resourceCounts[i]); writer.Write(e.Unk); }
-            foreach (var p in newFileParts) { writer.Write(p.SectionIndex); writer.Write(p.Unk1); writer.Write(p.FileIndex); writer.Write(p.RawOffset); writer.Write(p.Size); writer.Write(p.Unk2); }
-            foreach (var m in newFileMaps) { writer.Write(m.PartsCount); writer.Write(m.Unk1); writer.Write(m.FileType); writer.Write(m.Unk2); writer.Write(m.FileIndex); writer.Write(m.FirstPartIndex); }
-            foreach (var ix in newFileNameIndices) { writer.Write(ix.Offset); }
+            for (int i = 0; i < newSectionEntries.Count; i++)
+            {
+                var e = newSectionEntries[i];
+                writer.Write(e.FileType);
+                writer.Write(e.Type2);
+                writer.Write(e.Type3);
+                writer.Write(e.Type4);
+                writer.Write(e.RawOffset);
+                writer.Write(e.UnpackedSize);
+                writer.Write(e.PackedSize);
+                writer.Write(resourceCounts[i]);
+                writer.Write(e.Unk);
+            }
+            foreach (var p in newFileParts)
+            {
+                writer.Write(p.SectionIndex);
+                writer.Write(p.Unk1);
+                writer.Write(p.FileIndex);
+                writer.Write(p.RawOffset);
+                writer.Write(p.Size);
+                writer.Write(p.Unk2);
+            }
+            foreach (var m in newFileMaps)
+            {
+                writer.Write(m.PartsCount);
+                writer.Write(m.Unk1);
+                writer.Write(m.FileType);
+                writer.Write(m.Unk2);
+                writer.Write(m.FileIndex);
+                writer.Write(m.FirstPartIndex);
+            }
+            foreach (var ix in newFileNameIndices)
+            {
+                writer.Write(ix.Offset);
+            }
             writer.Write(namesStream.ToArray());
             if (metaPadding > 0) writer.Write(new byte[metaPadding]);
-            for (int i = 0; i < sectionsCount; i++) { writer.Write(sectionStreams[i].ToArray()); }
+            for (int i = 0; i < sectionsCount; i++)
+            {
+                writer.Write(sectionStreams[i].ToArray());
+            }
         }
 
         Console.ForegroundColor = ConsoleColor.Green;

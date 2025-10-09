@@ -5,11 +5,12 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Console.Title = ".Rpack DDS Tool by MetalHeadbangg a.k.a @unsc.odst";
+        Console.Title = "DLTB .DDS Tool";
 
         if (args.Length == 0)
         {
             Console.WriteLine("Usage:");
+            Console.WriteLine("DLTB .DDS Tool by MetalHeadbangg a.k.a @unsc.odst");
             Console.WriteLine("  - Drag a .rpack file onto an .exe file to extract the files.");
             Console.WriteLine("  - Drag an _unpack folder onto the .exe file to repack the archive.");
             Console.WriteLine("\nPress any key to exit...");
@@ -40,7 +41,7 @@ public class Program
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("\nAN UNEXPECTED ERROR HAS OCCURRED:");
-            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.ToString());
             Console.ResetColor();
         }
 
