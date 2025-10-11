@@ -222,13 +222,20 @@ public class Unpacker
             for (int i = 0; i < sortedFileInfos.Count; i++)
             {
                 var map = sortedFileInfos[i].Item1;
-                string fileName = fileNames[map.FileIndex];
-                Console.WriteLine($"  [{i + 1}/{sortedFileInfos.Count}] -> {fileName}");
-                var fileEntry = new FileEntry { OriginalIndex = map.FileIndex, RelativePath = fileName.Replace('\\', '/'), PartsCount = map.PartsCount, FileType = map.FileType, Unk1 = map.Unk1, Unk2 = map.Unk2, Parts = new List<FilePartInfo>() };
-                string outputPath = Path.Combine(outputDirectory, fileName);
-                Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+                string internalName = fileNames[map.FileIndex];
+                Console.WriteLine($"  [{i + 1}/{sortedFileInfos.Count}] -> {internalName}");
+
+                var fileEntry = new FileEntry { OriginalIndex = map.FileIndex, RelativePath = internalName.Replace('\\', '/'), PartsCount = map.PartsCount, FileType = map.FileType, Unk1 = map.Unk1, Unk2 = map.Unk2, Parts = new List<FilePartInfo>() };
+
+                string outputPath;
+
                 if (map.FileType == 32 && map.PartsCount == 2)
                 {
+                    string baseName = Path.GetFileNameWithoutExtension(internalName);
+                    string cleanExternalName = baseName + ".dds";
+                    outputPath = Path.Combine(outputDirectory, cleanExternalName);
+                    Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+
                     var metaPart = fileParts[(int)map.FirstPartIndex]; var dataPart = fileParts[(int)map.FirstPartIndex + 1];
                     fileEntry.Parts.Add(new FilePartInfo { SectionIndex = metaPart.SectionIndex, Unk1 = metaPart.Unk1 });
                     fileEntry.Parts.Add(new FilePartInfo { SectionIndex = dataPart.SectionIndex, Unk1 = dataPart.Unk1 });
@@ -241,7 +248,7 @@ public class Unpacker
                     uint mipCount = (uint)(typeAndMips >> 2);
                     uint texType = (uint)(typeAndMips & 0x03);
 
-                    string suffix = GetTextureSuffix(fileName);
+                    string suffix = GetTextureSuffix(internalName);
                     string formatString;
 
                     if (suffix == "fallback")
@@ -256,19 +263,27 @@ public class Unpacker
                         formatString = _formatMap[suffix];
                     }
 
-                    processedTexturesLog.Add(new Tuple<string, string>(fileName + ".dds", formatString));
+                    processedTexturesLog.Add(new Tuple<string, string>(cleanExternalName, formatString));
                     byte[] pixelData = ReadPartData(reader, dataPart, sectionEntries, decompressedSections);
                     byte[] ddsHeader = DdsHelper.GenerateDdsHeader(width, height, mipCount, formatString, texType, depth);
-                    using (var fs = new MemoryStream()) { fs.Write(ddsHeader, 0, ddsHeader.Length); fs.Write(pixelData, 0, pixelData.Length); File.WriteAllBytes(outputPath + ".dds", fs.ToArray()); }
+
+                    using (var fs = new MemoryStream())
+                    {
+                        fs.Write(ddsHeader, 0, ddsHeader.Length);
+                        fs.Write(pixelData, 0, pixelData.Length);
+                        File.WriteAllBytes(outputPath, fs.ToArray());
+                    }
                 }
                 else
                 {
+                    outputPath = Path.Combine(outputDirectory, internalName);
+                    Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
                     for (int p = 0; p < map.PartsCount; p++)
                     {
                         var part = fileParts[(int)map.FirstPartIndex + p];
                         fileEntry.Parts.Add(new FilePartInfo { SectionIndex = part.SectionIndex, Unk1 = part.Unk1 });
                         byte[] partData = ReadPartData(reader, part, sectionEntries, decompressedSections);
-                        string partOutputPath = map.PartsCount == 1 ? outputPath : Path.Combine(outputDirectory, $"{p}_{fileName}");
+                        string partOutputPath = map.PartsCount == 1 ? outputPath : Path.Combine(outputDirectory, $"{p}_{internalName}");
                         File.WriteAllBytes(partOutputPath, partData);
                     }
                 }
@@ -359,10 +374,7 @@ public class Unpacker
     private List<FileNameIndex> ReadFileNameIndices(BinaryReader reader, uint count)
     {
         var l = new List<FileNameIndex>();
-        for (int i = 0; i < count; i++) l.Add(new FileNameIndex
-        {
-            Offset = reader.ReadUInt32()
-        });
+        for (int i = 0; i < count; i++) l.Add(new FileNameIndex { Offset = reader.ReadUInt32() });
         return l;
     }
     private string ReadNullTerminatedString(byte[] buffer, uint offset)
@@ -383,20 +395,11 @@ public class Unpacker
                 if (c.Length > 2 && c[0] == 0x78)
                 {
                     using (var iS = new MemoryStream(c)) using (var zS = new ZlibStream(iS, CompressionMode.Decompress)) using (var oS = new MemoryStream())
-                    {
-                        zS.CopyTo(oS);
-                        d.Add(oS.ToArray());
-                    }
+                    { zS.CopyTo(oS); d.Add(oS.ToArray()); }
                 }
-                else
-                {
-                    d.Add(null);
-                }
+                else { d.Add(null); }
             }
-            else
-            {
-                d.Add(null);
-            }
+            else { d.Add(null); }
         }
         return d;
     }

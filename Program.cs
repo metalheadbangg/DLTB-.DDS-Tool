@@ -9,9 +9,9 @@ public class Program
 
         if (args.Length == 0)
         {
-            Console.WriteLine("Usage:");
             Console.WriteLine("DLTB .DDS Tool by MetalHeadbangg a.k.a @unsc.odst");
-            Console.WriteLine("  - Drag a .rpack file onto an .exe file to extract the files.");
+            Console.WriteLine("Usage:");
+            Console.WriteLine("  - Drag a .rpack file onto the .exe file to extract the files.");
             Console.WriteLine("  - Drag an _unpack folder onto the .exe file to repack the archive.");
             Console.WriteLine("\nPress any key to exit...");
             Console.ReadKey();
@@ -24,12 +24,18 @@ public class Program
         {
             if (File.Exists(inputPath) && Path.GetExtension(inputPath).Equals(".rpack", StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine($" Found: {Path.GetFileName(inputPath)}");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("Found:");
+                Console.ResetColor();
+                Console.WriteLine($" {Path.GetFileName(inputPath)}\n");
                 new Unpacker().Unpack(inputPath);
             }
             else if (Directory.Exists(inputPath) && new DirectoryInfo(inputPath).Name.EndsWith("_unpack", StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine($" Found: {new DirectoryInfo(inputPath).Name}");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("Found:");
+                Console.ResetColor();
+                Console.WriteLine($" {new DirectoryInfo(inputPath).Name}\n");
                 new Repacker().Repack(inputPath);
             }
             else
