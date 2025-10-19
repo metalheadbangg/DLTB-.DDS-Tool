@@ -11,36 +11,74 @@ public class Program
         {
             Console.WriteLine("DLTB .DDS Tool by MetalHeadbangg a.k.a @unsc.odst");
             Console.WriteLine("Usage:");
-            Console.WriteLine("  - Drag a .rpack file onto the .exe file to extract the files.");
-            Console.WriteLine("  - Drag an _unpack folder onto the .exe file to repack the archive.");
+            Console.WriteLine("  - Drag one or more .rpack files onto the .exe file to unpacking.");
+            Console.WriteLine("  - Drag a folder with .dds files for repacking.");
             Console.WriteLine("\nPress any key to exit...");
             Console.ReadKey();
             return;
         }
-
-        string inputPath = args[0];
+        string firstInputPath = args[0];
 
         try
         {
-            if (File.Exists(inputPath) && Path.GetExtension(inputPath).Equals(".rpack", StringComparison.OrdinalIgnoreCase))
+            if (File.Exists(firstInputPath) && Path.GetExtension(firstInputPath).Equals(".rpack", StringComparison.OrdinalIgnoreCase))
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Found:");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"Found {args.Length} .rpack files.");
                 Console.ResetColor();
-                Console.WriteLine($" {Path.GetFileName(inputPath)}\n");
-                new Unpacker().Unpack(inputPath);
+                int unpackedCount = 0;
+
+                for (int i = 0; i < args.Length; i++)
+                {
+                    string currentPath = args[i];
+                    Console.WriteLine(new string('=', 70));
+
+                    if (File.Exists(currentPath) && Path.GetExtension(currentPath).Equals(".rpack", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write($"Processing file [{i + 1}/{args.Length}]:");
+                        Console.ResetColor();
+                        Console.WriteLine($" {Path.GetFileName(currentPath)}\n");
+
+                        new Unpacker().Unpack(currentPath);
+                        unpackedCount++;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"Skipping non-.rpack file [{i + 1}/{args.Length}]: {Path.GetFileName(currentPath)}");
+                        Console.ResetColor();
+                    }
+                }
+
+                Console.WriteLine(new string('=', 70));
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"\nUnpack complete. {unpackedCount} file(s) unpacked.");
+                Console.ResetColor();
             }
-            else if (Directory.Exists(inputPath) && new DirectoryInfo(inputPath).Name.EndsWith("_unpack", StringComparison.OrdinalIgnoreCase))
+            else if (Directory.Exists(firstInputPath))
             {
+                string directoryName = new DirectoryInfo(firstInputPath).Name;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Found:");
+                Console.Write("Found Directory:");
                 Console.ResetColor();
-                Console.WriteLine($" {new DirectoryInfo(inputPath).Name}\n");
-                new Repacker().Repack(inputPath);
+                Console.WriteLine($" {directoryName}\n");
+
+                string expectedJsonName = directoryName.Replace("_unpack", "") + "_repack.json";
+                string jsonPath = Path.Combine(AppContext.BaseDirectory, "jsondata", expectedJsonName);
+
+                if (File.Exists(jsonPath) && directoryName.EndsWith("_unpack", StringComparison.OrdinalIgnoreCase))
+                {
+                    new Repacker().Repack(firstInputPath);
+                }
+                else
+                {
+                    new Repacker().CombineAndRepack(firstInputPath);
+                }
             }
             else
             {
-                Console.WriteLine("Error: Please drag a valid .rpack file or a folder with the _unpack extension.");
+                Console.WriteLine("Error: Please drag a valid .rpack file (for unpacking) or a folder (for repacking).");
             }
         }
         catch (Exception ex)
@@ -51,7 +89,7 @@ public class Program
             Console.ResetColor();
         }
 
-        Console.WriteLine("\nComplete. Press any key to exit.");
+        Console.WriteLine("\nPress any key to exit.");
         Console.ReadKey();
     }
 }

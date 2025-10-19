@@ -25,8 +25,13 @@ public static class DdsHelper
             switch (formatString.ToUpper())
             {
                 case "BC1": fourCC = FOURCC_DXT1; isCompressed = true; blockSize = 8; break;
+                case "BC1_SNORM": useDx10Header = true; formatForDx10 = 70; isCompressed = true; blockSize = 8; break;
+                case "BC1_UNORM": useDx10Header = true; formatForDx10 = 71; isCompressed = true; blockSize = 8; break;
+                case "BC1_SRGB": useDx10Header = true; formatForDx10 = 72; isCompressed = true; blockSize = 8; break;
                 case "BC2": fourCC = FOURCC_DXT3; isCompressed = true; blockSize = 16; break;
+                case "BC2_SRGB": useDx10Header = true; formatForDx10 = 75; isCompressed = true; blockSize = 16; break;
                 case "BC3": fourCC = FOURCC_DXT5; isCompressed = true; blockSize = 16; break;
+                case "BC3_SRGB": useDx10Header = true; formatForDx10 = 78; isCompressed = true; blockSize = 16; break;
                 case "BC4_UNORM": useDx10Header = true; formatForDx10 = 80; isCompressed = true; blockSize = 8; break;
                 case "BC4": useDx10Header = true; formatForDx10 = 80; isCompressed = true; blockSize = 8; break;
                 case "BC4_SNORM": useDx10Header = true; formatForDx10 = 81; isCompressed = true; blockSize = 8; break;
@@ -35,6 +40,7 @@ public static class DdsHelper
                 case "BC6H_UF16": useDx10Header = true; formatForDx10 = 95; isCompressed = true; blockSize = 16; break;
                 case "BC6H_SF16": useDx10Header = true; formatForDx10 = 96; isCompressed = true; blockSize = 16; break;
                 case "BC7": useDx10Header = true; formatForDx10 = 98; isCompressed = true; blockSize = 16; break;
+                case "BC7_SRGB": useDx10Header = true; formatForDx10 = 99; isCompressed = true; blockSize = 16; break;
                 case "R8": useDx10Header = true; formatForDx10 = 61; bitsPerPixel = 8; break;
                 case "R8_SNORM": useDx10Header = true; formatForDx10 = 62; bitsPerPixel = 8; break;
                 case "RG8": useDx10Header = true; formatForDx10 = 49; bitsPerPixel = 16; break;
@@ -44,6 +50,7 @@ public static class DdsHelper
                 case "RG16": useDx10Header = true; formatForDx10 = 35; bitsPerPixel = 32; break;
                 case "RG16_SNORM": useDx10Header = true; formatForDx10 = 36; bitsPerPixel = 32; break;
                 case "RGBA8": useDx10Header = true; formatForDx10 = 28; bitsPerPixel = 32; break;
+                case "RGBA8_SRGB": useDx10Header = true; formatForDx10 = 29; bitsPerPixel = 32; break;
                 case "RGBA8_SNORM": useDx10Header = true; formatForDx10 = 31; bitsPerPixel = 32; break;
                 case "RGBA8_UINT": useDx10Header = true; formatForDx10 = 30; bitsPerPixel = 32; break;
                 case "RGBA16": useDx10Header = true; formatForDx10 = 11; bitsPerPixel = 64; break;

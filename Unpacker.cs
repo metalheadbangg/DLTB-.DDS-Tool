@@ -23,7 +23,7 @@ public class Unpacker
             { "ddf", "BC7" }, { "default", "BC1" }, { "deh", "BC1" }, { "det", "BC4" }, { "difa", "BC7" },
             { "dir", "RGBA8_SNORM" }, { "dirs2d", "RG16_SNORM" }, { "dirs3d", "RGBA8_SNORM" }, { "diru2d", "RG16" },
             { "dit", "BC4" }, { "dml", "BC7" }, { "dn1", "R16_SNORM" }, { "dnr", "R16_SNORM" }, { "dpo", "BC4_SNORM" },
-            { "dpt", "BC4" }, { "dtc", "BC1" }, { "dtm", "BC7" }, { "dv1", "RGBA16F" }, { "dvc", "RGBA16F" }, { "dye", "BC7" },
+            { "dpt", "BC4" }, { "dtc", "BC1" }, { "dtm", "BC7" }, { "dv1", "RGBA16F" }, { "dvc", "RGBA16F" }, { "dye", "BC1" },
             { "ema", "RGBA8" }, { "end", "BC6H_UF16" }, { "enr", "BC6H_UF16" }, { "env", "BC1" },
             { "exp", "R8" }, { "eym", "BC5" }, { "fam", "RGBA8" }, { "fdc", "BC7" }, { "fdm", "BC4" }, { "flm", "BC5_SNORM" },
             { "flw", "BC4" }, { "fow", "BC7" }, { "frs", "BC4" }, { "frz", "BC4" }, { "fxd", "BC7" }, { "fxe", "BC7" },
@@ -37,11 +37,11 @@ public class Unpacker
             { "msv", "R8" }, { "mtx0", "RGBA16_SNORM" }, { "mtx1", "RGBA16_SNORM" }, { "mtx2", "RGBA16_SNORM" },
             { "nlt", "BC4" }, { "nrd", "RGBA8_UINT" }, { "nrm", "BC5_SNORM" }, { "ocl", "BC4" },
             { "od1", "BC7" }, { "od2", "BC7" }, { "od3", "BC7" }, { "od4", "BC7" }, { "oe1", "BC7" }, { "oe2", "BC7" },
-            { "oe3", "BC7" }, { "oe4", "BC7" }, { "ofc", "BC7" }, { "off", "BC4" }, { "ofo", "BC1" }, { "olm", "BC4_SNORM" },
+            { "oe3", "BC7" }, { "oe4", "BC7" }, { "ofc", "BC1_UNORM" }, { "off", "BC4" }, { "ofo", "BC1" }, { "olm", "BC4_SNORM" },
             { "olmhlp", "RGBA8" }, { "olmsrc", "RGBA8" }, { "opc", "BC4" }, { "ovr", "BC4" }, { "ovr3d", "R8" },
             { "ppc0", "BC7" }, { "ppcm", "BC7" }, { "ppd0", "BC5" }, { "ppm0", "BC4" }, { "ppmm", "BC4" }, { "ppnm", "BC5_SNORM" },
-            { "prc", "BC7" }, { "pre", "RG8" }, { "prj", "BC7" }, { "ref", "BC7" }, { "rfm", "BC4" }, { "rgh", "BC4" },
-            { "rot", "BC5_SNORM" }, { "satdif", "BC7" }, { "satnrm", "BC5_SNORM" }, { "satrgh", "BC4" }, { "satspc", "BC7" },
+            { "prc", "BC7" }, { "pre", "RG8" }, { "prj", "BC7" }, { "ref", "BC1" }, { "rfm", "BC4" }, { "rgh", "BC4" },
+            { "rot", "BC5_SNORM" }, { "satdif", "BC1" }, { "satnrm", "BC5_SNORM" }, { "satrgh", "BC4" }, { "satspc", "BC1" },
             { "sdf", "R8" }, { "sdm", "RGBA8" }, { "skm", "RGBA16F" }, { "skn", "BC4" }, { "sky", "BC6H_UF16" },
             { "srgh", "BC4_SNORM" }, { "thc", "BC4" }, { "tng", "BC5_SNORM" }, { "trn", "BC4" }, { "trs", "R16" }, { "txc", "BC4" },
             { "uic", "BC7" }, { "uics", "BC7" }, { "uif", "BC4" }, { "uifmsdf", "BC7" }, { "uim", "BC4" }, { "uims", "BC4" },
@@ -66,116 +66,56 @@ public class Unpacker
     {
         switch (gameFormat)
         {
-            case 23: case 89: case 186: return "BC1";
-            case 4:
-            case 8:
-            case 10:
-            case 11:
-            case 14:
-            case 16:
-            case 25:
-            case 27:
-            case 35:
-            case 38:
-            case 43:
-            case 44:
-            case 50:
-            case 81:
-            case 83:
-            case 86:
-            case 91:
-            case 95:
-            case 97:
-            case 99:
-            case 107:
-            case 108:
-            case 114:
-            case 121:
-            case 125:
-            case 133:
-            case 135:
-            case 137:
-            case 183:
-            case 189:
+            case 23: case 89: case 186:
+                return "BC1";
+
+            case 4: case 8: case 10: case 11: case 14: case 16: case 25: case 27: case 35: case 38:
+            case 43: case 44: case 50: case 81: case 83: case 86: case 91: case 95: case 97: case 99: case 107: case 108:
+            case 114: case 121: case 125: case 133: case 135: case 137: case 183: case 189:
                 return "BC4";
-            case 12: case 22: case 52: return "BC4_SNORM";
-            case 19: case 106: return "BC5";
-            case 20:
-            case 41:
-            case 47:
-            case 48:
-            case 49:
-            case 82:
-            case 90:
-            case 109:
-            case 115:
-            case 120:
-            case 134:
-            case 144:
-            case 180:
-            case 182:
-            case 184:
+
+            case 12: case 22: case 52: 
+                return "BC4_SNORM";
+
+            case 19: case 106:
+                return "BC5";
+
+            case 20: case 41: case 47: case 48: case 49: case 82: case 90: case 109: case 115: case 120: case 134: case 144: case 180: case 182: case 184:
                 return "BC5_SNORM";
+
             case 1: case 2: case 3: case 5: case 62: return "BC6H_UF16";
-            case 17:
-            case 18:
-            case 24:
-            case 28:
-            case 29:
-            case 30:
-            case 45:
-            case 51:
-            case 53:
-            case 54:
-            case 55:
-            case 63:
-            case 92:
-            case 93:
-            case 94:
-            case 104:
-            case 105:
-            case 110:
-            case 112:
-            case 122:
-            case 128:
-            case 145:
+            case 17: case 18: case 24: case 28: case 29: case 30: case 45: case 51:case 53: case 54:
+            case 55: case 63: case 92: case 93: case 94: case 104: case 105: case 110: case 112: case 122: case 128: case 145:
                 return "BC7";
-            case 37:
-            case 60:
-            case 64:
-            case 68:
-            case 84:
-            case 100:
-            case 118:
-            case 143:
-            case 187:
+
+            case 37: case 60: case 64: case 68: case 84: case 100: case 118: case 143: case 187:
                 return "R8";
+
             case 185: return "R8_SNORM";
+
             case 111: return "RG8";
+
             case 87: return "RG8_SNORM";
+
             case 56: return "R16_UNORM";
+
             case 33: case 34: return "R16_SNORM";
+
             case 36: return "RG16";
+
             case 32: return "RG16_SNORM";
-            case 6:
-            case 21:
-            case 42:
-            case 46:
-            case 61:
-            case 67:
-            case 78:
-            case 146:
-            case 147:
-            case 149:
-            case 150:
-            case 152:
-            case 181:
-            case 188:
+
+            case 6: case 21: case 42: case 46: case 61: case 67: case 78: case 146: case 147: case 149: case 150: case 152: case 181: case 188:
                 return "RGBA8";
+
             case 31: return "RGBA8_SNORM";
+
             case 88: return "RGBA8_UINT";
+
             case 9: case 141: return "RGBA16";
+
             case 7: case 85: return "RGBA16_SNORM";
+
             case 0: case 39: case 40: case 124: return "RGBA16F";
 
             case 59: return (texType == 1) ? "BC7" : "BC1";
@@ -196,10 +136,15 @@ public class Unpacker
         Console.WriteLine("Starting unpacking...");
         var processedTexturesLog = new List<Tuple<string, string>>();
         string archiveName = Path.GetFileNameWithoutExtension(rpackPath);
-        string outputDirectory = Path.Combine(Path.GetDirectoryName(rpackPath), archiveName + "_unpack");
+        string exeDirectory = AppContext.BaseDirectory;
+        string outputDirectory = Path.Combine(exeDirectory, archiveName + "_unpack");
         if (Directory.Exists(outputDirectory)) { Directory.Delete(outputDirectory, true); }
         Directory.CreateDirectory(outputDirectory);
         Console.WriteLine($"Files will be extracted to: {outputDirectory}");
+        string jsonDataPath = Path.Combine(exeDirectory, "jsondata");
+        string texInfoPath = Path.Combine(exeDirectory, "texinfo");
+        Directory.CreateDirectory(jsonDataPath);
+        Directory.CreateDirectory(texInfoPath);
         var project = new RepackProject { Sections = new List<SectionInfo>(), Files = new List<FileEntry>() };
         using (var stream = File.OpenRead(rpackPath))
         using (var reader = new BinaryReader(stream))
@@ -290,17 +235,17 @@ public class Unpacker
                 project.Files.Add(fileEntry);
             }
         }
-        string jsonPath = Path.Combine(Path.GetDirectoryName(rpackPath), archiveName + "_repack.json");
+        string jsonPath = Path.Combine(jsonDataPath, archiveName + "_repack.json");
         string jsonString = JsonConvert.SerializeObject(project, Formatting.Indented);
         File.WriteAllText(jsonPath, jsonString);
         Console.WriteLine($"\nCreated JSON Data for repacking: {jsonPath}");
         if (processedTexturesLog.Any())
         {
-            string texTypesLogPath = Path.Combine(AppContext.BaseDirectory, $"{archiveName}_TexTypes.txt");
-            var logBuilder = new StringBuilder();
-            foreach (var entry in processedTexturesLog) { logBuilder.AppendLine($"{entry.Item1} ---> {entry.Item2}"); }
-            File.WriteAllText(texTypesLogPath, logBuilder.ToString());
-            Console.WriteLine($"Texture format log created: {texTypesLogPath}");
+            string texTypesLogPath = Path.Combine(texInfoPath, $"{archiveName}_TexTypes.txt");
+    var logBuilder = new StringBuilder();
+    foreach (var entry in processedTexturesLog) { logBuilder.AppendLine($"{entry.Item1} ---> {entry.Item2}"); }
+    File.WriteAllText(texTypesLogPath, logBuilder.ToString());
+    Console.WriteLine($"Texture format log created: {texTypesLogPath}");
         }
         Console.WriteLine("\nAll Files Unpacked.");
     }
